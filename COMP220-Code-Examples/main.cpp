@@ -4,15 +4,15 @@
 #include <SDL_opengl.h>
 #include <SDL_image.h>
 
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> //Math libs
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <assimp/Importer.hpp>	
+#include <assimp/Importer.hpp>	//Asset importers
 #include <assimp/scene.h>	
 #include <assimp/postprocess.h>	
 
-#include "Shader.h"
+#include "Shader.h" //Shader files
 #include "Vertex.h"
 #include <random>
 
@@ -240,7 +240,7 @@ int main(int argc, char ** argsv)
 
 	glm::mat4 mvp, view, projection; // set up model, view, projection
 	
-	glm::vec3 position(0, 0, 2), forward(0,0,-1), rotation(0);
+	glm::vec3 position(0, 0, 2), forward(0,0,-1), rotation(0), right(1,0,0), up(0,1,0);
 	const glm::vec4 cameraFace(0,0,-1,0);
 	const float walkspeed = 0.2f, rotSpeed = 0.1f;
 	unsigned int transformLoc = glGetUniformLocation(programID, "transform");
@@ -351,12 +351,20 @@ int main(int argc, char ** argsv)
 
 	//DEPTH TEST MOVED!!
 
+	float lastTime = SDL_GetTicks();
+
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
 	//SDL Event structure, this will be checked in the while loop
 	SDL_Event ev;
 	while (running)
 	{
+		//Delta time calc
+		float nowTime = SDL_GetTicks();
+		//convert delta time to seconds
+		float deltaTime = (nowTime - lastTime) /1000.0f;
+		lastTime = nowTime;
+
 		//Poll for the events which have happened in this frame
 		//https://wiki.libsdl.org/SDL_PollEvent
 		while (SDL_PollEvent(&ev))
@@ -391,6 +399,18 @@ int main(int argc, char ** argsv)
 					break;
 				case SDLK_s:
 					position -= walkspeed * forward;
+					break;
+				case SDLK_d:
+					position += walkspeed * right;
+					break;
+				case SDLK_a:
+					position -= walkspeed * right;
+					break;
+				case SDLK_SPACE:
+					position += walkspeed * up;
+					break;
+				case SDLK_LSHIFT:
+					position -= walkspeed * up;
 					break;
 				}
 			}
