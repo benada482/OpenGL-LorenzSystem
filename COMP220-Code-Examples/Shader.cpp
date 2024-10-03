@@ -42,7 +42,7 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
 	glCompileShader(VertexShaderID);
 
-	// Check Vertex Shader
+	// Check Vertex Shader (to see if it runs)
 	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
 	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	if (InfoLogLength > 0) {

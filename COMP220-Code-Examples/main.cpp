@@ -425,7 +425,7 @@ int main(int argc, char ** argsv)
 		glEnable(GL_DEPTH_TEST);
 
 		//define the colour the 'clear' call uses when drawing over entire screen
-		glClearColor(0.0f,0.0f,0.4f,0.0f);
+		glClearColor(0.0f,0.0f,0.0f,0.0f);
 		//clear the screen (prevents drawing over previous screen)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -475,7 +475,7 @@ int main(int argc, char ** argsv)
 		
 		SDL_GL_SwapWindow(window);
 	}
-
+	
 	//clear memory before exit
 	glDisableVertexAttribArray(0);
 	glDeleteBuffers(1, &vertexBuffer);

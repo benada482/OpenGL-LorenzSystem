@@ -22,21 +22,22 @@ void main()
 			vec2(offset, -offset)
 		);
 
-
-		/*float kernal[9] = float[](
+		
+		float kernal[9] = float[](
 			-1,-1,-1,
 			-1, 9,-1,
 			-1,-1,-1
 		);
-		*/
 		
-		//EDGE DETECTION
+		
+		/*
+		//EDGE DETECTION (only shows strong lines)
 		float kernal[9] = float[](
 			1, 1, 1,
 			1, -8, 1,
 			1, 1, 1
 		);
-		
+		*/
 
 		vec3 sampleTex[9];
 		for(int i = 0; i<9; i++){
