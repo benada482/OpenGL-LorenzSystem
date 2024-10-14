@@ -105,8 +105,20 @@ int main(int argc, char ** argsv)
 	std::vector<unsigned> indices;
 	std::string texturePath;
 
+	std::vector<Vertex> vertices1;
+	std::vector<unsigned> indices1;
+	std::string texturePath1;
+
 	//we can check for box here too!
 	if (!LoadModel("Crate.fbx", vertices, indices, texturePath))
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR LOADING MODEL", "", NULL);
+		//TODO: clean up here
+		return 1;
+	}
+
+	//we can check for box here too!
+	if (!LoadModel("utah-teapot.fbx", vertices1, indices1, texturePath1))
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR LOADING MODEL", "", NULL);
 		//TODO: clean up here
@@ -191,8 +203,6 @@ int main(int argc, char ** argsv)
 		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
 		(void*)(6 * sizeof(GL_FLOAT))	//NOTE: Starts after first 3 float values!
 	);
-	
-
 
 	//modified from: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
 	// Generate a buffer for the indices
@@ -200,6 +210,51 @@ int main(int argc, char ** argsv)
 	glGenBuffers(1, &elementbuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(), &indices[0], GL_STATIC_DRAW);
+
+	//Create 2nd Object
+	GLuint VertexArrayID1;
+	glGenVertexArrays(1, &VertexArrayID1);
+	glBindVertexArray(VertexArrayID1);
+
+	GLuint vertexBuffer1;
+	glGenBuffers(1, &vertexBuffer1);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer1);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices1.size(), &vertices1[0], GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0); //attribute in location 0
+	glVertexAttribPointer(
+		0,			//attribute 0, must match the layout in the shader
+		3,			//size (of attribute - 3D vector, so 3)
+		GL_FLOAT,	//data type
+		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
+		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
+		(void*)0	//array buffer offset (how far from start of array buffer does first vertex start?)
+	);
+
+	glEnableVertexAttribArray(1); //attribute in location 0
+	glVertexAttribPointer(
+		1,			//attribute 0, must match the layout in the shader
+		3,			//size (of attribute - 3D vector, so 3)
+		GL_FLOAT,	//data type
+		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
+		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
+		(void*)(3 * sizeof(GL_FLOAT))	//array buffer offset (how far from start of array buffer does first vertex start?)
+	);
+
+	glEnableVertexAttribArray(2); //attribute in location 1
+	glVertexAttribPointer(
+		2,			//attribute 1, must match the layout in the shader
+		2,			//size (of attribute - 2D vector, so 2)
+		GL_FLOAT,	//data type
+		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
+		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
+		(void*)(6 * sizeof(GL_FLOAT))	//NOTE: Starts after first 3 float values!
+	);
+
+	GLuint elementbuffer1;
+	glGenBuffers(1, &elementbuffer1);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer1);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned)* indices1.size(), &indices1[0], GL_STATIC_DRAW);
 
 
 	// Create one OpenGL texture
@@ -460,6 +515,10 @@ int main(int argc, char ** argsv)
 		glBindVertexArray(VertexArrayID);
 		if(image) glBindTexture(GL_TEXTURE_2D, textureID);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
+
+		glBindVertexArray(VertexArrayID1);
+		if (image) glBindTexture(GL_TEXTURE_2D, textureID);
+		glDrawElements(GL_TRIANGLES, indices1.size(), GL_UNSIGNED_INT, (void*)0);
 		
 		//render texture on quad
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -480,6 +539,9 @@ int main(int argc, char ** argsv)
 	glDisableVertexAttribArray(0);
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteVertexArrays(1, &VertexArrayID);
+	glDisableVertexAttribArray(1);
+	glDeleteBuffers(1, &vertexBuffer1);
+	glDeleteVertexArrays(1, &VertexArrayID1);
 
 	SDL_FreeSurface(image);
 	SDL_GL_DeleteContext(glContext);
