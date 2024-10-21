@@ -516,6 +516,13 @@ int main(int argc, char ** argsv)
 		if(image) glBindTexture(GL_TEXTURE_2D, textureID);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
 
+		//draw 2nd object
+		glm::mat4 model1 = glm::mat4(1.0f);
+		model1 = glm::translate(model1, glm::vec3(5.0f, 0.0f, 0.0f));
+		model1 = glm::scale(model1, glm::vec3(0.1f, 0.1f, 0.1f));
+		mvp = projection * view * model1;
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glBindVertexArray(VertexArrayID1);
 		if (image) glBindTexture(GL_TEXTURE_2D, textureID);
 		glDrawElements(GL_TRIANGLES, indices1.size(), GL_UNSIGNED_INT, (void*)0);
@@ -531,6 +538,7 @@ int main(int argc, char ** argsv)
 		glBindVertexArray(screenVAOID);
 		glBindTexture(GL_TEXTURE_2D, renderTextureID);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
 		
 		SDL_GL_SwapWindow(window);
 	}
