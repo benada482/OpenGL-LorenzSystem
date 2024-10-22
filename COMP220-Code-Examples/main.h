@@ -1,0 +1,1 @@
+void Lighting(GLuint programID);

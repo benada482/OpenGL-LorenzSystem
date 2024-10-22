@@ -15,6 +15,7 @@
 #include "Shader.h" //Shader files
 #include "Vertex.h"
 #include <random>
+#include "main.h"
 
 
 bool LoadModel(const char* filePath, std::vector<Vertex>& vertices, std::vector<unsigned>& indices, std::string& texturePath)
@@ -303,22 +304,7 @@ int main(int argc, char ** argsv)
 	unsigned int modelLoc = glGetUniformLocation(programID, "model");
 	unsigned int viewPosLoc = glGetUniformLocation(programID, "viewPos");
 
-	//COPY THIS BLOCK FROM LECTURE SLIDES!!!
-	//note: lightcolour is changed!
-	float lightValues[] = {
-		-1.0f, 1.f, 0.4f, // lightDir
-		0.0f, // padding for alignment
-		1.f, 1.f, 1.f // lightColour
-	};
-	GLuint bindingPoint = 1, uniformBuffer, blockIndex;
-	blockIndex = glGetUniformBlockIndex(programID, "LightBlock");
-	glUniformBlockBinding(programID, blockIndex, bindingPoint);
-	glGenBuffers(1, &uniformBuffer);
-	glBindBuffer(GL_UNIFORM_BUFFER, uniformBuffer);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(lightValues),
-				 lightValues, GL_STATIC_DRAW);
-	glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint,
-		uniformBuffer);
+	Lighting(programID);
 
 	// NOTE: THIS SECTION IS FROM WORKSHOP SLIDES
 	//The texture we are going to render to
@@ -522,7 +508,7 @@ int main(int argc, char ** argsv)
 		model1 = glm::scale(model1, glm::vec3(0.1f, 0.1f, 0.1f));
 		mvp = projection * view * model1;
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
 		glBindVertexArray(VertexArrayID1);
 		if (image) glBindTexture(GL_TEXTURE_2D, textureID);
 		glDrawElements(GL_TRIANGLES, indices1.size(), GL_UNSIGNED_INT, (void*)0);
@@ -563,4 +549,24 @@ int main(int argc, char ** argsv)
 	SDL_Quit();
 
 	return 0;
+}
+
+void Lighting(GLuint programID)
+{
+	//COPY THIS BLOCK FROM LECTURE SLIDES!!!
+	//note: lightcolour is changed!
+	float lightValues[] = {
+		-1.0f, 1.f, 0.4f, // lightDir
+		0.0f, // padding for alignment
+		1.f, 1.f, 1.f // lightColour
+	};
+	GLuint bindingPoint = 1, uniformBuffer, blockIndex;
+	blockIndex = glGetUniformBlockIndex(programID, "LightBlock");
+	glUniformBlockBinding(programID, blockIndex, bindingPoint);
+	glGenBuffers(1, &uniformBuffer);
+	glBindBuffer(GL_UNIFORM_BUFFER, uniformBuffer);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(lightValues),
+		lightValues, GL_STATIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint,
+		uniformBuffer);
 }
