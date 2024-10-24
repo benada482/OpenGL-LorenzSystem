@@ -106,9 +106,9 @@ int main(int argc, char ** argsv)
 	std::vector<unsigned> indices;
 	std::string texturePath;
 
-	std::vector<Vertex> vertices1;
-	std::vector<unsigned> indices1;
-	std::string texturePath1;
+	std::vector<Vertex> verticesVar;
+	std::vector<unsigned> indicesVar;
+	std::string texturePathVar;
 
 	//we can check for box here too!
 	if (!LoadModel("Crate.fbx", vertices, indices, texturePath))
@@ -119,7 +119,7 @@ int main(int argc, char ** argsv)
 	}
 
 	//we can check for box here too!
-	if (!LoadModel("utah-teapot.fbx", vertices1, indices1, texturePath1))
+	if (!LoadModel("utah-teapot.fbx", verticesVar, indicesVar, texturePathVar))
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR LOADING MODEL", "", NULL);
 		//TODO: clean up here
@@ -212,51 +212,17 @@ int main(int argc, char ** argsv)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(), &indices[0], GL_STATIC_DRAW);
 
+	//-------------------------------------------------------------------
 	//Create 2nd Object
-	GLuint VertexArrayID1;
-	glGenVertexArrays(1, &VertexArrayID1);
-	glBindVertexArray(VertexArrayID1);
 
-	GLuint vertexBuffer1;
-	glGenBuffers(1, &vertexBuffer1);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer1);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices1.size(), &vertices1[0], GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(0); //attribute in location 0
-	glVertexAttribPointer(
-		0,			//attribute 0, must match the layout in the shader
-		3,			//size (of attribute - 3D vector, so 3)
-		GL_FLOAT,	//data type
-		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
-		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
-		(void*)0	//array buffer offset (how far from start of array buffer does first vertex start?)
-	);
+	GLuint VertexArrayIDVar;
+	GLuint vertexBufferVar;
+	GLuint elementbufferVar;
+	
+	Buffers(VertexArrayIDVar, vertexBufferVar, verticesVar, elementbufferVar, indicesVar);
 
-	glEnableVertexAttribArray(1); //attribute in location 0
-	glVertexAttribPointer(
-		1,			//attribute 0, must match the layout in the shader
-		3,			//size (of attribute - 3D vector, so 3)
-		GL_FLOAT,	//data type
-		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
-		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
-		(void*)(3 * sizeof(GL_FLOAT))	//array buffer offset (how far from start of array buffer does first vertex start?)
-	);
-
-	glEnableVertexAttribArray(2); //attribute in location 1
-	glVertexAttribPointer(
-		2,			//attribute 1, must match the layout in the shader
-		2,			//size (of attribute - 2D vector, so 2)
-		GL_FLOAT,	//data type
-		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
-		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
-		(void*)(6 * sizeof(GL_FLOAT))	//NOTE: Starts after first 3 float values!
-	);
-
-	GLuint elementbuffer1;
-	glGenBuffers(1, &elementbuffer1);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer1);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned)* indices1.size(), &indices1[0], GL_STATIC_DRAW);
-
+	//--------------------------------------------------------------------------
 
 	// Create one OpenGL texture
 	GLuint textureID;
@@ -483,6 +449,7 @@ int main(int argc, char ** argsv)
 		//glm::ortho for orthographic
 		mvp = projection * view * model;
 
+
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -506,12 +473,12 @@ int main(int argc, char ** argsv)
 		glm::mat4 model1 = glm::mat4(1.0f);
 		model1 = glm::translate(model1, glm::vec3(5.0f, 0.0f, 0.0f));
 		model1 = glm::scale(model1, glm::vec3(0.1f, 0.1f, 0.1f));
-		mvp = projection * view * model1;
+		mvp = projection * view * model1;  
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
-		glBindVertexArray(VertexArrayID1);
+		glBindVertexArray(VertexArrayIDVar);
 		if (image) glBindTexture(GL_TEXTURE_2D, textureID);
-		glDrawElements(GL_TRIANGLES, indices1.size(), GL_UNSIGNED_INT, (void*)0);
+		glDrawElements(GL_TRIANGLES, indicesVar.size(), GL_UNSIGNED_INT, (void*)0);
 		
 		//render texture on quad
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -534,8 +501,8 @@ int main(int argc, char ** argsv)
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glDisableVertexAttribArray(1);
-	glDeleteBuffers(1, &vertexBuffer1);
-	glDeleteVertexArrays(1, &VertexArrayID1);
+	glDeleteBuffers(1, &vertexBufferVar);
+	glDeleteVertexArrays(1, &VertexArrayIDVar);
 
 	SDL_FreeSurface(image);
 	SDL_GL_DeleteContext(glContext);
@@ -549,6 +516,50 @@ int main(int argc, char ** argsv)
 	SDL_Quit();
 
 	return 0;
+}
+
+void Buffers(GLuint& VertexArrayIDVar, GLuint& vertexBufferVar, std::vector<Vertex>& verticesVar, GLuint& elementbufferVar, std::vector<std::seed_seq::result_type>& indicesVar)
+{
+	glGenVertexArrays(1, &VertexArrayIDVar);
+	glBindVertexArray(VertexArrayIDVar);
+
+	glGenBuffers(1, &vertexBufferVar);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferVar);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * verticesVar.size(), &verticesVar[0], GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0); //attribute in location 0
+	glVertexAttribPointer(
+		0,			//attribute 0, must match the layout in the shader
+		3,			//size (of attribute - 3D vector, so 3)
+		GL_FLOAT,	//data type
+		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
+		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
+		(void*)0	//array buffer offset (how far from start of array buffer does first vertex start?)
+	);
+
+	glEnableVertexAttribArray(1); //attribute in location 0
+	glVertexAttribPointer(
+		1,			//attribute 0, must match the layout in the shader
+		3,			//size (of attribute - 3D vector, so 3)
+		GL_FLOAT,	//data type
+		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
+		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
+		(void*)(3 * sizeof(GL_FLOAT))	//array buffer offset (how far from start of array buffer does first vertex start?)
+	);
+
+	glEnableVertexAttribArray(2); //attribute in location 1
+	glVertexAttribPointer(
+		2,			//attribute 1, must match the layout in the shader
+		2,			//size (of attribute - 2D vector, so 2)
+		GL_FLOAT,	//data type
+		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
+		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
+		(void*)(6 * sizeof(GL_FLOAT))	//NOTE: Starts after first 3 float values!
+	);
+
+	glGenBuffers(1, &elementbufferVar);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbufferVar);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indicesVar.size(), &indicesVar[0], GL_STATIC_DRAW);
 }
 
 void Lighting(GLuint programID)
