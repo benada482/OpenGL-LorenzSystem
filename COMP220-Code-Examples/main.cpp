@@ -155,62 +155,11 @@ int main(int argc, char ** argsv)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to initialise GLEW", (char*)glewGetErrorString(glewError), NULL);
 	}
 
-	//create Vertex Array Object
 	GLuint VertexArrayID;
-	//generate vertex array objects
-	glGenVertexArrays(1, &VertexArrayID); //first param is number of object, 2nd is object
-	//bind gl calls to VertexArrayID
-	glBindVertexArray(VertexArrayID);
-
-
-	//storage area for our buffer data
 	GLuint vertexBuffer;
-	//generate 1 buffer, put the resulting identifier in vertexBuffer
-	glGenBuffers(1, &vertexBuffer);
-	//bind the buffer so the operations of GLBuffer apply to vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	//set our current buffer target data to the g_buffer_data object
-	//static draw means we are making a static object - we define the object once and do not change it (similar to static in Unity/Unreal)
-	//see GL documentation for other draw types
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-
-
-	glEnableVertexAttribArray(0); //attribute in location 0
-	glVertexAttribPointer(
-		0,			//attribute 0, must match the layout in the shader
-		3,			//size (of attribute - 3D vector, so 3)
-		GL_FLOAT,	//data type
-		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
-		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
-		(void*)0	//array buffer offset (how far from start of array buffer does first vertex start?)
-	);
-
-	glEnableVertexAttribArray(1); //attribute in location 0
-	glVertexAttribPointer(
-		1,			//attribute 0, must match the layout in the shader
-		3,			//size (of attribute - 3D vector, so 3)
-		GL_FLOAT,	//data type
-		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
-		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
-		(void*)(3 * sizeof(GL_FLOAT))	//array buffer offset (how far from start of array buffer does first vertex start?)
-	);
-
-	glEnableVertexAttribArray(2); //attribute in location 1
-	glVertexAttribPointer(
-		2,			//attribute 1, must match the layout in the shader
-		2,			//size (of attribute - 2D vector, so 2)
-		GL_FLOAT,	//data type
-		GL_FALSE,	//normalised? (between -1 and 1? if not, GL_TRUE will map automatically)
-		sizeof(Vertex),			//stride (how far from start of one attribute to the next - beggining of one vertex to the next)
-		(void*)(6 * sizeof(GL_FLOAT))	//NOTE: Starts after first 3 float values!
-	);
-
-	//modified from: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
-	// Generate a buffer for the indices
 	GLuint elementbuffer;
-	glGenBuffers(1, &elementbuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(), &indices[0], GL_STATIC_DRAW);
+
+	Buffers(VertexArrayID, vertexBuffer, vertices, elementbuffer, indices);
 
 	//-------------------------------------------------------------------
 	//Create 2nd Object
@@ -518,14 +467,14 @@ int main(int argc, char ** argsv)
 	return 0;
 }
 
-void Buffers(GLuint& VertexArrayIDVar, GLuint& vertexBufferVar, std::vector<Vertex>& verticesVar, GLuint& elementbufferVar, std::vector<std::seed_seq::result_type>& indicesVar)
+void Buffers(GLuint& VertexArrayID, GLuint& vertexBuffer, std::vector<Vertex>& vertices, GLuint& elementbuffer, std::vector<std::seed_seq::result_type>& indices)
 {
-	glGenVertexArrays(1, &VertexArrayIDVar);
-	glBindVertexArray(VertexArrayIDVar);
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
 
-	glGenBuffers(1, &vertexBufferVar);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferVar);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * verticesVar.size(), &verticesVar[0], GL_STATIC_DRAW);
+	glGenBuffers(1, &vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0); //attribute in location 0
 	glVertexAttribPointer(
@@ -557,9 +506,9 @@ void Buffers(GLuint& VertexArrayIDVar, GLuint& vertexBufferVar, std::vector<Vert
 		(void*)(6 * sizeof(GL_FLOAT))	//NOTE: Starts after first 3 float values!
 	);
 
-	glGenBuffers(1, &elementbufferVar);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbufferVar);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indicesVar.size(), &indicesVar[0], GL_STATIC_DRAW);
+	glGenBuffers(1, &elementbuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(), &indices[0], GL_STATIC_DRAW);
 }
 
 void Lighting(GLuint programID)
