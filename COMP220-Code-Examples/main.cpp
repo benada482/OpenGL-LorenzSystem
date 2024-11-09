@@ -17,6 +17,8 @@
 #include <random>
 #include "main.h"
 
+const int screenWidth = 960;
+const int screenHeight = 720;
 
 bool LoadModel(const char* filePath, std::vector<Vertex>& vertices, std::vector<unsigned>& indices, std::string& texturePath)
 {
@@ -90,7 +92,7 @@ int main(int argc, char ** argsv)
 	
 	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
 	//https://wiki.libsdl.org/SDL_CreateWindow
-	SDL_Window* window = SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 960, 720, SDL_WINDOW_OPENGL);
+	SDL_Window* window = SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_OPENGL);
 	//Checks to see if the window has been created, the pointer will have a value of some kind
 	if (window == nullptr)
 	{
@@ -229,7 +231,7 @@ int main(int argc, char ** argsv)
 	glBindTexture(GL_TEXTURE_2D, renderTextureID);
 	//fill with empty data
 	//NOTE: REPLACE IMAGE width, height WITH SCREEN RESOLUTION
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 960, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, screenWidth, screenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	//without clamping, our fragShader kernal may go over the edge and wrap over the screen, causing unwanted artefacts!
@@ -244,7 +246,7 @@ int main(int argc, char ** argsv)
 	glBindRenderbuffer(GL_RENDERBUFFER, depthBufferID);
 	//Set the format of the depth buffer
 	//NOTE: UPDATED SCREEN RESOLUTION
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 960, 720);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, screenWidth, screenHeight);
 
 	//NOTE ALSO COPIED FROM WORKSHOP SLIDES
 	//The framebuffer
@@ -307,7 +309,10 @@ int main(int argc, char ** argsv)
 
 	//DEPTH TEST MOVED!!
 
-	float lastTime = SDL_GetTicks();
+	//Delta time setup
+	Uint64 now = SDL_GetPerformanceCounter();
+	Uint64 last = 0;
+	double deltaTime = 0.0;
 
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
@@ -315,11 +320,10 @@ int main(int argc, char ** argsv)
 	SDL_Event ev;
 	while (running)
 	{
-		//Delta time calc
-		float nowTime = SDL_GetTicks();
-		//convert delta time to seconds
-		float deltaTime = (nowTime - lastTime) /1000.0f;
-		lastTime = nowTime;
+		//deltaTime calc
+		last = now;
+		now = SDL_GetPerformanceCounter();
+		deltaTime = (double)((now - last) * 1000 / (double)SDL_GetPerformanceFrequency());
 
 		//Poll for the events which have happened in this frame
 		//https://wiki.libsdl.org/SDL_PollEvent
