@@ -51,8 +51,8 @@ int main(int argc, char** argsv)
 		particleSystem.update();
 
 		//stored as unsigned char so if value goes about 256 it will overflow to be stored within the 255 range
-		unsigned char green = (1 + sin(SDL_GetTicks() * 0.0001)) * 128;
-		unsigned char red = (1 + sin(SDL_GetTicks() * 0.0002)) * 128;
+		unsigned char green = (1 + cos(SDL_GetTicks() * 0.0001)) * 128;
+		unsigned char red = (1 + cos(SDL_GetTicks() * 0.0002)) * 128;
 		unsigned char blue = (1 + sin(SDL_GetTicks() * 0.0003)) * 128;
 
 		const Particle* const pParticles = particleSystem.getParticles();

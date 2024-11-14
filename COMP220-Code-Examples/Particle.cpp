@@ -6,8 +6,8 @@ Particle::Particle()
 	xPos = ((2.0 * rand()) / RAND_MAX) - 1;
 	yPos = ((2.0 * rand()) / RAND_MAX) - 1;
 
-	xSpeed = 0.01 * (((2.0 * rand()) / RAND_MAX) - 1);
-	ySpeed = 0.01 * (((2.0 * rand()) / RAND_MAX) - 1);
+	xSpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
+	ySpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
 }
 
 void Particle::update()

@@ -4,8 +4,8 @@
 class Window
 {
 public:
-	const static int screenWidth = 960;
-	const static int screenHeight = 720;
+	const static int screenWidth = 1920;
+	const static int screenHeight = 1080;
 
 	Window();
 	bool init();
