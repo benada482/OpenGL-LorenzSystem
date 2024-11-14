@@ -47,6 +47,9 @@ int main(int argc, char** argsv)
 		now = SDL_GetPerformanceCounter();
 		deltaTime = (double)((now - last) * 1000 / (double)SDL_GetPerformanceFrequency());
 
+		window.clearScreen();
+		particleSystem.update();
+
 		//stored as unsigned char so if value goes about 256 it will overflow to be stored within the 255 range
 		unsigned char green = (1 + sin(SDL_GetTicks() * 0.0001)) * 128;
 		unsigned char red = (1 + sin(SDL_GetTicks() * 0.0002)) * 128;

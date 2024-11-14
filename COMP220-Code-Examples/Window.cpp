@@ -120,6 +120,11 @@ void Window::setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue)
 	buffer[(y * screenWidth) + x] = colour;
 }
 
+void Window::clearScreen()
+{
+	memset(buffer, 0, screenWidth * screenHeight * sizeof(Uint32));
+}
+
 void Window::close()
 {
 	delete[] buffer;

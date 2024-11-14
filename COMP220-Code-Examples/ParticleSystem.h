@@ -10,6 +10,7 @@ public:
 	const Particle* const getParticles() { return pParticles; };
 	
 	ParticleSystem();
+	void update();
 
 	~ParticleSystem();
 private:
