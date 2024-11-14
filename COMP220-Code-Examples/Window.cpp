@@ -1,18 +1,20 @@
 #include "Window.h"
 #include <gl\glew.h>
+#include "string.h"
 
 Window::Window()
 {
-	SDL_Window* window(NULL);
-	SDL_Renderer* renderer(NULL);
-	SDL_Texture* texture(NULL);
-	Uint32* buffer(NULL);
+	SDL_Window* window(nullptr);
+	SDL_Renderer* renderer(nullptr);
+	SDL_Texture* texture(nullptr);
+	Uint32* buffer(nullptr);
 }
 
 bool Window::init()
 {
+	buffer = new Uint32[screenWidth * screenHeight];
 	//Initialises the SDL Library, passing in SDL_INIT_VIDEO to only initialise the video subsystems
-//https://wiki.libsdl.org/SDL_Init
+	//https://wiki.libsdl.org/SDL_Init
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		//Display an error message box
@@ -70,22 +72,16 @@ bool Window::init()
 	}
 
 	//Sets the buffer value to amount of pixels within window
-	Uint32* buffer = new Uint32[screenWidth * screenHeight];
+	//Uint32* buffer = new Uint32[screenWidth * screenHeight];
 
 	//Sets screen to black first
 	//memset(buffer, 0, screenWidth * screenHeight*sizeof(Uint32));
 
 	//Sets the screen pixels to hex colour in pairs of RGBA
 	for (int i = 0; i < screenWidth * screenHeight; i++)
-	{
-		buffer[i] = 0xFF00FFFF;
+	{ 
+		buffer[i] = 0x000000FF;
 	}
-
-	//Updates screen with pixel values
-	SDL_UpdateTexture(texture, NULL, buffer, screenWidth * sizeof(Uint32));
-	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, texture, NULL, NULL);
-	SDL_RenderPresent(renderer);
 
 	return true;
 }
@@ -95,9 +91,38 @@ bool Window::processEvents()
 	return false;
 }
 
+void Window::update()
+{
+	//Updates screen with pixel values
+	SDL_UpdateTexture(texture, NULL, buffer, screenWidth * sizeof(Uint32));
+	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_RenderPresent(renderer);
+
+}
+
+void Window::setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue)
+{
+	if (x < 0 || x >= screenWidth || y < 0 || y >= screenHeight) 
+	{ 
+		return; 
+	}
+	Uint32 colour = 0;
+
+	colour += red;
+	colour <<= 8;
+	colour += green;
+	colour <<= 8;
+	colour += blue;
+	colour <<= 8;
+	colour += 0xFF;
+
+	buffer[(y * screenWidth) + x] = colour;
+}
+
 void Window::close()
 {
-	//delete[] buffer;
+	delete[] buffer;
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyTexture(texture);
 	SDL_DestroyWindow(window);

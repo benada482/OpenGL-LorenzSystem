@@ -47,19 +47,40 @@ int main(int argc, char** argsv)
 		now = SDL_GetPerformanceCounter();
 		deltaTime = (double)((now - last) * 1000 / (double)SDL_GetPerformanceFrequency());
 
+		//stored as unsigned char so if value goes about 256 it will overflow to be stored within the 255 range
+		unsigned char green = (1 + sin(SDL_GetTicks() * 0.0001)) * 128;
+		unsigned char red = (1 + sin(SDL_GetTicks() * 0.0002)) * 128;
+		unsigned char blue = (1 + sin(SDL_GetTicks() * 0.0003)) * 128;
+
+		const Particle* const pParticles = particleSystem.getParticles();
+		for (int i = 0; i < ParticleSystem::NPARTICLES; i++)
+		{
+			Particle particle = pParticles[i];
+
+		 int x = (particle.xPos + 1) * Window::screenWidth / 2;
+		 int y = (particle.yPos + 1) * Window::screenHeight / 2;
+
+		 window.setPixel(x, y, red, green, blue);
+		}
+
+		
+
+		/*for (int y = 0; y < Window::screenHeight; y++)
+		{
+			for (int x = 0; x < Window::screenWidth; x++)
+			{
+				window.setPixel(x, y, red, green, blue);
+			}
+		}*/
+
+		//Draws to screen
+		window.update();
+
 		//Poll for the events which have happened in this frame
 		//https://wiki.libsdl.org/SDL_PollEvent
 		//PUT INTO WINDOW.CPP PROCESS FUNCTION ON TUTORIAL
 		while (SDL_PollEvent(&ev))
 		{
-			const Particle* const pParticles = particleSystem.getParticles();
-			for (int i = 0; i < ParticleSystem::NPARTICLES; i++)
-			{
-				//Particle particle = pParticles(i);
-
-				//int x = (particle.xPos + 1) * screenWidth / 2;
-				//int y = (particle.yPos + 1) * screenHeight / 2;
-			}
 
 			//Switch case for every message we are intereted in
 			switch (ev.type)
