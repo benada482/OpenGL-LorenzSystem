@@ -24,6 +24,12 @@ int main(int argc, char** argsv)
 {
 	srand(time(NULL));
 
+	glm::mat4 mvp, view, projection;
+	glm::vec3 position(0, 0, 2), forward(0, 0, -1), rotation(0), right(1, 0, 0), up(0, 1, 0);
+	const glm::vec4 cameraFace(0, 0, -1, 0);
+	const float walkspeed = 0.2f, rotSpeed = 0.1f;
+	projection = glm::perspective(glm::radians(45.f), 4.0f / 3.0f, 0.1f, 100.0f);
+
 	Window window;
 	if (window.init() == false)
 	{
@@ -51,30 +57,30 @@ int main(int argc, char** argsv)
 		particleSystem.update();
 
 		//stored as unsigned char so if value goes about 256 it will overflow to be stored within the 255 range
-		unsigned char green = (1 + cos(SDL_GetTicks() * 0.0001)) * 128;
-		unsigned char red = (1 + cos(SDL_GetTicks() * 0.0002)) * 128;
-		unsigned char blue = (1 + sin(SDL_GetTicks() * 0.0003)) * 128;
+		unsigned char green = 225;
+		unsigned char red = 225;
+		unsigned char blue = 225;
 
 		const Particle* const pParticles = particleSystem.getParticles();
-		for (int i = 0; i < ParticleSystem::NPARTICLES; i++)
-		{
-			Particle particle = pParticles[i];
 
-		 int x = (particle.xPos + 1) * Window::screenWidth / 2;
-		 int y = (particle.yPos + 1) * Window::screenHeight / 2;
+		// Set particle size to 5 pixels
+		glPointSize(5.0f); 
 
-		 window.setPixel(x, y, red, green, blue);
+		// Setup OpenGL to draw particles
+		glBegin(GL_POINTS);
+		for (int i = 0; i < ParticleSystem::NPARTICLES; i++) {
+			const Particle& particle = pParticles[i];
+
+			//mvp transformation
+			glm::vec4 position(particle.xPos, particle.yPos, particle.zPos, 1.0f);
+			glm::vec4 cameraPos = mvp * position;
+			// Convert from clip space to normalized device coordinates (NDC)
+			glm::vec3 normalisedPos = glm::vec3(cameraPos) / cameraPos.w;
+
+			// Draw particle in transformed position
+			glVertex3f(normalisedPos.x, normalisedPos.y, normalisedPos.z);
 		}
-
-		
-
-		/*for (int y = 0; y < Window::screenHeight; y++)
-		{
-			for (int x = 0; x < Window::screenWidth; x++)
-			{
-				window.setPixel(x, y, red, green, blue);
-			}
-		}*/
+		glEnd();
 
 		//Draws to screen
 		window.update();
@@ -84,7 +90,6 @@ int main(int argc, char** argsv)
 		//PUT INTO WINDOW.CPP PROCESS FUNCTION ON TUTORIAL
 		while (SDL_PollEvent(&ev))
 		{
-
 			//Switch case for every message we are intereted in
 			switch (ev.type)
 			{
@@ -92,6 +97,17 @@ int main(int argc, char** argsv)
 			case SDL_QUIT:
 				running = false;
 				break;
+			case SDL_MOUSEMOTION:
+				rotation.y -= ev.motion.xrel * rotSpeed;
+				rotation.x -= ev.motion.yrel * rotSpeed;
+				glm::mat4 viewRotate(1.f);
+				viewRotate = glm::rotate(viewRotate, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+				viewRotate = glm::rotate(viewRotate, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+				forward = glm::normalize(glm::vec3(viewRotate * cameraFace));
+				right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
+				up = glm::normalize(glm::cross(right, forward));
+				break;
+
 				//KEYDOWN Message, called when a key has been pressed down
 			case SDL_KEYDOWN:
 				//Check the actual key code of the key that has been pressed
@@ -101,9 +117,35 @@ int main(int argc, char** argsv)
 				case SDLK_ESCAPE:
 					running = false;
 					break;
+				case SDLK_w:
+					position += walkspeed * forward;
+					break;
+				case SDLK_s:
+					position -= walkspeed * forward;
+					break;
+				case SDLK_d:
+					position += walkspeed * right;
+					break;
+				case SDLK_a:
+					position -= walkspeed * right;
+					break;
+				case SDLK_SPACE:
+					position += walkspeed * up;
+					break;
+				case SDLK_LSHIFT:
+					position -= walkspeed * up;
+					break;
 				}
 			}
+			// Update the camera view matrix
+			view = glm::lookAt(
+				position,
+				position + forward,
+				up
+			);
 
+			// Update MVP
+			mvp = projection * view;
 		}
 	}
 	window.close();

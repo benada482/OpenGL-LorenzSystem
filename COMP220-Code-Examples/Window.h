@@ -1,5 +1,8 @@
 #pragma once
 #include "SDL.h"
+#include <glm/glm.hpp> //Math libs
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Window
 {
@@ -9,7 +12,6 @@ public:
 
 	Window();
 	bool init();
-	bool processEvents();
 	void update();
 	void setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue);
 	void clearScreen();
