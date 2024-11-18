@@ -9,8 +9,12 @@ struct Particle
 	double ySpeed;
 	double zSpeed;
 
-	float a, b, c, x, y, dt, z;
+	double x, y, z, a, b, c, t;
+	double xt, yt, zt;
+
+
 	Particle();
+	void lorenzEquation();
 	void update();
 	~Particle();
 };
