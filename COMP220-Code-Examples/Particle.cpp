@@ -4,13 +4,13 @@
 
 Particle::Particle()
 {
-	xPos = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
-	yPos = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
-	zPos = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
+	xPos = 0;
+	yPos = 0;
+	zPos = 0;
 
-	xSpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
-	ySpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
-	zSpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
+	//xSpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
+	//ySpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
+	//zSpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
 	x = 0.1;
 	y = 0;
 	z = 0;
@@ -18,6 +18,7 @@ Particle::Particle()
 	b = 28.0;
 	c = 8.0 / 3.0;
 	t = 0.01;
+	int i;
 }
 
 void Particle::lorenzEquation()
@@ -33,15 +34,30 @@ void Particle::lorenzEquation()
 
 void Particle::update()
 {
-	lorenzEquation();
+	//lorenzEquation();
 
 	//float maxAbs = std::max({ std::abs(x), std::abs(y), std::abs(z) });
 	//float scale = 1.0 / maxAbs;
 
-	xPos += x *  0.01;
-	yPos += y *  0.01;
-	zPos += z *  0.01;
-	std::cout << xPos << std::endl;
+	//double xt = x + t * a * (y - x);
+	//double yt = y + t * (x * (b - z) - y);
+	//double zt = z + t * (x * y - c * z);
+	double dxdt = a * (y - x);
+	double dydt = (x * (c - z) - y);
+	double dzdt = (x * y - b * z);
+
+	double nx = x + t * dxdt;
+	double ny = y + t * dydt;
+	double nz = z + t * dzdt;
+
+		//x = xt;
+		//y = yt;
+		//z = zt;
+
+	xPos += nx;
+	yPos += ny;
+	zPos += nz;
+	
 
 	/*if (xPos < -1.0 || xPos >= 1.0)
 	{

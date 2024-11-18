@@ -11,6 +11,7 @@ struct Particle
 
 	double x, y, z, a, b, c, t;
 	double xt, yt, zt;
+	int i;
 
 
 	Particle();
