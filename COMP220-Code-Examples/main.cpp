@@ -65,7 +65,7 @@ int main(int argc, char** argsv)
 		const Particle* const pParticles = particleSystem.getParticles();
 
 		// Set particle size to 5 pixels
-		glPointSize(5.0f); 
+		glPointSize(1.0f); 
 
 		// Setup OpenGL to draw particles
 		glBegin(GL_POINTS);
