@@ -4,12 +4,12 @@
 class Window
 {
 public:
+	//Variables set for the screen size. 
 	const static int screenWidth = 1920;
 	const static int screenHeight = 1080;
 
 	Window();
 	bool init();
-	bool processEvents();
 	void update();
 	void setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue);
 	void clearScreen();

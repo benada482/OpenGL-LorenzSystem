@@ -2,6 +2,7 @@
 #include <gl\glew.h>
 #include "string.h"
 
+//Initialises variables for the window
 Window::Window()
 {
 	SDL_Window* window(nullptr);
@@ -10,6 +11,10 @@ Window::Window()
 	Uint32* buffer(nullptr);
 }
 
+/// <summary>
+/// Sets ups all necessary libraries and contexts, sets background colour to black
+/// </summary>
+/// <returns></returns>
 bool Window::init()
 {
 	buffer = new Uint32[screenWidth * screenHeight];
@@ -71,12 +76,6 @@ bool Window::init()
 		return false;
 	}
 
-	//Sets the buffer value to amount of pixels within window
-	//Uint32* buffer = new Uint32[screenWidth * screenHeight];
-
-	//Sets screen to black first
-	//memset(buffer, 0, screenWidth * screenHeight*sizeof(Uint32));
-
 	//Sets the screen pixels to hex colour in pairs of RGBA
 	for (int i = 0; i < screenWidth * screenHeight; i++)
 	{ 
@@ -86,21 +85,16 @@ bool Window::init()
 	return true;
 }
 
-bool Window::processEvents()
-{
-	return false;
-}
-
+//Gets called to draw to the window
 void Window::update()
 {
-	//Updates screen with pixel values
 	SDL_UpdateTexture(texture, NULL, buffer, screenWidth * sizeof(Uint32));
 	SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
-
 }
 
+//Logic for setting the window pixels from where the array and update function in main says they should be
 void Window::setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue)
 {
 	if (x < 0 || x >= screenWidth || y < 0 || y >= screenHeight) 
@@ -120,11 +114,13 @@ void Window::setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue)
 	buffer[(y * screenWidth) + x] = colour;
 }
 
+//Sets the screen to black
 void Window::clearScreen()
 {
 	memset(buffer, 0, screenWidth * screenHeight * sizeof(Uint32));
 }
 
+//Deletes all variables and contexts made during run time
 void Window::close()
 {
 	delete[] buffer;

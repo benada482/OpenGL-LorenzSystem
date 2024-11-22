@@ -1,6 +1,7 @@
 #include "Particle.h"
 #include <stdlib.h>
 
+//Sets a random starting position and speed for each particle in the x and y coordinates
 Particle::Particle()
 {
 	xPos = ((2.0 * rand()) / RAND_MAX) - 1;
@@ -10,6 +11,10 @@ Particle::Particle()
 	ySpeed = 0.001 * (((2.0 * rand()) / RAND_MAX) - 1);
 }
 
+/// <summary>
+/// Moves each particle by the speed it has defined. 
+/// If the particle reaches the limit of the screen border then the speed value is reversed so it will go the opposite way
+/// </summary>
 void Particle::update()
 {
 	xPos += xSpeed;
@@ -25,6 +30,7 @@ void Particle::update()
 	}
 }
 
+//Destructor
 Particle::~Particle()
 {
 	

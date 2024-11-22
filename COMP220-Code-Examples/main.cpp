@@ -22,8 +22,10 @@
 
 int main(int argc, char** argsv)
 {
+	//Random function that utilises time to seed the randomness 
 	srand(time(NULL));
 
+	//Creation of the display window
 	Window window;
 	if (window.init() == false)
 	{
@@ -36,6 +38,7 @@ int main(int argc, char** argsv)
 	double deltaTime = 0.0;
 
 	ParticleSystem particleSystem;
+
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
 	//SDL Event structure, this will be checked in the while loop
@@ -47,16 +50,20 @@ int main(int argc, char** argsv)
 		now = SDL_GetPerformanceCounter();
 		deltaTime = (double)((now - last) * 1000 / (double)SDL_GetPerformanceFrequency());
 
+		//Clears the screen with each iteration, and updates the position of each particle
 		window.clearScreen();
 		particleSystem.update();
 
 		//stored as unsigned char so if value goes about 256 it will overflow to be stored within the 255 range
-		unsigned char green = (1 + cos(SDL_GetTicks() * 0.0001)) * 128;
-		unsigned char red = (1 + cos(SDL_GetTicks() * 0.0002)) * 128;
-		unsigned char blue = (1 + sin(SDL_GetTicks() * 0.0003)) * 128;
+		unsigned char green = 255;
+		unsigned char red = 255;
+		unsigned char blue = 255;
 
+		////Goes through each particle updating the values to the new coordinates and updating the pixel display
+		////For loop going through each pixel, then updates their x and y with the screensize values so they don't travel too far
+		////Set pixel then feeds the position and colour back into the function.
 		const Particle* const pParticles = particleSystem.getParticles();
-		for (int i = 0; i < ParticleSystem::NPARTICLES; i++)
+		for (int i = 0; i < ParticleSystem::numOfParticles; i++)
 		{
 			Particle particle = pParticles[i];
 
@@ -65,16 +72,6 @@ int main(int argc, char** argsv)
 
 		 window.setPixel(x, y, red, green, blue);
 		}
-
-		
-
-		/*for (int y = 0; y < Window::screenHeight; y++)
-		{
-			for (int x = 0; x < Window::screenWidth; x++)
-			{
-				window.setPixel(x, y, red, green, blue);
-			}
-		}*/
 
 		//Draws to screen
 		window.update();
@@ -106,6 +103,7 @@ int main(int argc, char** argsv)
 
 		}
 	}
+	//Runs the close function when the loop is stopped
 	window.close();
 	return 0;
 }
