@@ -69,7 +69,7 @@ int main(int argc, char** argsv)
 
 		// Setup OpenGL to draw particles
 		glBegin(GL_POINTS);
-		for (int i = 0; i < ParticleSystem::NPARTICLES; i++) {
+		for (int i = 0; i < ParticleSystem::numOfParticles; i++) {
 			const Particle& particle = pParticles[i];
 
 			//mvp transformation

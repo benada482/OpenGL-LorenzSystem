@@ -5,7 +5,7 @@
 class ParticleSystem
 {
 public:
-	const static int NPARTICLES = 100000;
+	const static int numOfParticles = 1000;
 
 	const Particle* const getParticles() { return pParticles; };
 	

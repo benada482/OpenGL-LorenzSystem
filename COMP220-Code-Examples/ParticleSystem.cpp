@@ -2,12 +2,12 @@
 
 ParticleSystem::ParticleSystem()
 {
-	pParticles = new Particle[NPARTICLES];
+	pParticles = new Particle[numOfParticles];
 }
 
 void ParticleSystem::update()
 {
-	for (int i = 0; i < ParticleSystem::NPARTICLES; i++)
+	for (int i = 0; i < ParticleSystem::numOfParticles; i++)
 	{
 		pParticles[i].update();
 	}

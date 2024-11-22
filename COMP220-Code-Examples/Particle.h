@@ -15,7 +15,6 @@ struct Particle
 
 
 	Particle();
-	void lorenzEquation();
 	void update();
 	~Particle();
 };
