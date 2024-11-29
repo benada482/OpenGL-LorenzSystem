@@ -2,6 +2,11 @@
 #include <gl\glew.h>
 #include "string.h"
 
+#include "imGUI/imgui.h"
+#include "imGUI/imgui_impl_sdl.h"
+#include "imGUI/imgui_impl_opengl3.h"
+
+
 Window::Window()
 {
 	SDL_Window* window(nullptr);
@@ -35,7 +40,7 @@ bool Window::init()
 		return false;
 	}
 
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_GLContext glContext = SDL_GL_CreateContext(window);
 
 	//Set SDL_GL version
@@ -57,15 +62,31 @@ bool Window::init()
 	glEnable(GL_DEPTH_TEST); // Enable depth testing
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black background
 
+	//Setup Imgui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+	ImGui_ImplSDL2_InitForOpenGL(window, glContext);
+	ImGui_ImplOpenGL3_Init();
+
 
 	return true;
 }
 
 void Window::update()
 {
+	//Start ImGui frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+	ImGui::ShowDemoWindow();
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 	//Updates screen with pixel values
 	SDL_GL_SwapWindow(window);
-
 }
 
 void Window::clearScreen()
@@ -75,6 +96,9 @@ void Window::clearScreen()
 
 void Window::close()
 {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }

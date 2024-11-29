@@ -20,6 +20,10 @@
 #include "Window.h";
 #include "ParticleSystem.h"
 
+#include "imGUI/imgui.h"
+#include "imGUI/imgui_impl_sdl.h"
+#include "imGUI/imgui_impl_opengl3.h"
+
 int main(int argc, char** argsv)
 {
 	srand(time(NULL));
@@ -91,6 +95,7 @@ int main(int argc, char** argsv)
 		//PUT INTO WINDOW.CPP PROCESS FUNCTION ON TUTORIAL
 		while (SDL_PollEvent(&ev))
 		{
+			ImGui_ImplSDL2_ProcessEvent(&ev);
 			//Switch case for every message we are intereted in
 			switch (ev.type)
 			{
@@ -98,7 +103,7 @@ int main(int argc, char** argsv)
 			case SDL_QUIT:
 				running = false;
 				break;
-			case SDL_MOUSEMOTION:
+			/*case SDL_MOUSEMOTION:
 				rotation.y -= ev.motion.xrel * rotSpeed;
 				rotation.x -= ev.motion.yrel * rotSpeed;
 				glm::mat4 viewRotate(1.f);
@@ -107,7 +112,7 @@ int main(int argc, char** argsv)
 				forward = glm::normalize(glm::vec3(viewRotate * cameraFace));
 				right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
 				up = glm::normalize(glm::cross(right, forward));
-				break;
+				break;*/
 
 				//KEYDOWN Message, called when a key has been pressed down
 			case SDL_KEYDOWN:
@@ -147,6 +152,7 @@ int main(int argc, char** argsv)
 
 			// Update MVP
 			mvp = projection * view;
+
 		}
 	}
 	window.close();
