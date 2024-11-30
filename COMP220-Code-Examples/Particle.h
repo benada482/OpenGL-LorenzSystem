@@ -16,6 +16,7 @@ struct Particle
 
 	Particle();
 	void update();
+	void reset();
 	~Particle();
 };
 

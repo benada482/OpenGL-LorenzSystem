@@ -46,6 +46,8 @@ int main(int argc, char** argsv)
 	double deltaTime = 0.0;
 
 	ParticleSystem particleSystem;
+	window.setParticleSystem(&particleSystem);
+
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
 	//SDL Event structure, this will be checked in the while loop
@@ -61,19 +63,15 @@ int main(int argc, char** argsv)
 		window.clearScreen();
 		particleSystem.update();
 
-		//stored as unsigned char so if value goes about 256 it will overflow to be stored within the 255 range
-		unsigned char green = 225;
-		unsigned char red = 225;
-		unsigned char blue = 225;
-
 		const Particle* const pParticles = particleSystem.getParticles();
+		int particlesToRender = particleSystem.particles.size(); //get vector size
 
 		// Set particle size to 5 pixels
 		glPointSize(1.0f); 
 
 		// Setup OpenGL to draw particles
 		glBegin(GL_POINTS);
-		for (int i = 0; i < ParticleSystem::numOfParticles; i++) {
+		for (int i = 0; i < particlesToRender; i++) {
 			const Particle& particle = pParticles[i];
 
 			//mvp transformation

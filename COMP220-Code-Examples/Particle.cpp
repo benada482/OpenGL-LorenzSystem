@@ -30,6 +30,13 @@ void Particle::update()
 	
 }
 
+void Particle::reset()
+{
+	xPos = ((double)rand() / RAND_MAX) * 0.09 + 0.01;
+	yPos = ((double)rand() / RAND_MAX) * 0.09 + 0.01;
+	zPos = ((double)rand() / RAND_MAX) * 0.09 + 0.01;
+}
+
 Particle::~Particle()
 {
 	

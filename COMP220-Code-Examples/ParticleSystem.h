@@ -1,19 +1,20 @@
 #pragma once
 
 #include "Particle.h"
+#include <vector>
 
 class ParticleSystem
 {
 public:
-	const static int numOfParticles = 1000;
+	int numOfParticles = 1000;
 
-	const Particle* const getParticles() { return pParticles; };
+	const Particle* const getParticles() { return particles.data(); };
+	std::vector<Particle> particles;
 	
 	ParticleSystem();
 	void update();
+	void resizeParticles();
 
 	~ParticleSystem();
-private:
-	Particle * pParticles;
 };
 
