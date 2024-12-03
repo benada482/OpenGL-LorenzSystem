@@ -6,6 +6,8 @@
 #include "imGUI/imgui_impl_sdl.h"
 #include "imGUI/imgui_impl_opengl3.h"
 
+#include "particle.h"
+
 
 
 
@@ -73,7 +75,6 @@ bool Window::init()
 	ImGui_ImplSDL2_InitForOpenGL(window, glContext);
 	ImGui_ImplOpenGL3_Init();
 
-
 	return true;
 }
 
@@ -92,9 +93,12 @@ void Window::update()
 	ImGui::Begin("Settings");
 
 	ImGui::Text("Particle Number");
-	ImGui::SliderInt("Int slider", &particleSystem->numOfParticles, 1, 10000);
-	particleSystem->update();
+	ImGui::SliderInt("Int slider", &particleSystem->numOfParticles, 0, 100000);
+	//particleSystem->update();
 	ImGui::Text("Value: %d", particleSystem->numOfParticles);
+
+	ImGui::Text("a value");
+	ImGui::SliderFloat("Float Slider", &particle.a, 0.0f, 20.0f);
 
 	ImGui::End();
 	

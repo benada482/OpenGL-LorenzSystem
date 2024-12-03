@@ -24,5 +24,6 @@ public:
 	SDL_Texture* texture;
 	Uint32* buffer;
 	ParticleSystem* particleSystem;
+	Particle particle;
 };
 

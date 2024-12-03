@@ -9,7 +9,11 @@ struct Particle
 	double ySpeed;
 	double zSpeed;
 
-	double x, y, z, a, b, c, t;
+	float x, y, z /*a, b, c, t*/;
+	float a = 10;
+	float b = 28;
+	float c = 8.0 / 3.0;
+	float t = 0.01;
 	double xt, yt, zt;
 	int i;
 
