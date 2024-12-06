@@ -38,6 +38,9 @@ int main(int argc, char** argsv)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Window/SDL Initialisation failed", SDL_GetError(), NULL);
 	}
 
+	// Create and compile our GLSL program from the shaders
+	GLuint programID = LoadShaders("BasicVert.glsl","BasicFrag.glsl");
+
 	//Delta time setup
 	Uint64 now = SDL_GetPerformanceCounter();
 	Uint64 last = 0;
@@ -45,7 +48,17 @@ int main(int argc, char** argsv)
 
 	ParticleSystem particleSystem;
 	window.setParticleSystem(&particleSystem);
+	const Particle* const pParticles = particleSystem.getParticles();
 
+	GLuint particleVBO;
+	glGenBuffers(1, &particleVBO);
+
+	std::vector<glm::vec3> particlePositions(particleSystem.particles.size());
+	for (size_t i = 0; i < particleSystem.particles.size(); ++i) {
+		const Particle& particle = pParticles[i];
+		particlePositions[i] = glm::vec3(particle.xPos, particle.yPos, particle.zPos);
+	}
+	
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
 	//SDL Event structure, this will be checked in the while loop
@@ -61,30 +74,20 @@ int main(int argc, char** argsv)
 		window.clearScreen();
 		particleSystem.update();
 
-		const Particle* const pParticles = particleSystem.getParticles();
-		int particlesToRender = particleSystem.particles.size(); //get vector size
+		glUseProgram(programID);
+		glBindBuffer(GL_ARRAY_BUFFER, particleVBO);
+		glBufferData(GL_ARRAY_BUFFER, particlePositions.size() * sizeof(glm::vec3), &particlePositions[0], GL_DYNAMIC_DRAW);
 
-		// Set particle size to 5 pixels
-		glPointSize(1.0f); 
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 
-		// Setup OpenGL to draw particles
-		glBegin(GL_POINTS);
-		for (int i = 0; i < particlesToRender; i++) {
-			const Particle& particle = pParticles[i];
+		glUniformMatrix4fv(glGetUniformLocation(programID, "mvp"), 1, GL_FALSE, glm::value_ptr(mvp));
 
-			//mvp transformation
-			glm::vec4 position(particle.xPos, particle.yPos, particle.zPos, 1.0f);
-			glm::vec4 cameraPos = mvp * position;
-			// Convert from clip space to normalized device coordinates (NDC)
-			glm::vec3 normalisedPos = glm::vec3(cameraPos) / cameraPos.w;
+		glDrawArrays(GL_POINTS, 0, particleSystem.particles.size());
 
-			// Draw particle in transformed position
-			glVertex3f(normalisedPos.x, normalisedPos.y, normalisedPos.z);
-		}
-		glEnd();
+		glDisableVertexAttribArray(0);
 
-		//Draws to screen
-		window.update();
+
 
 		//Poll for the events which have happened in this frame
 		//https://wiki.libsdl.org/SDL_PollEvent

@@ -36,7 +36,6 @@ void Particle::update()
 	xPos += dx;
 	yPos += dy;
 	zPos += dz;
-	
 }
 
 Particle::~Particle()
