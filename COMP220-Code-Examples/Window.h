@@ -7,8 +7,8 @@
 class Window
 {
 public:
-	const static int screenWidth = 1920;
-	const static int screenHeight = 1080;
+	const static int screenWidth = 800;
+	const static int screenHeight = 600;
 
 	Window();
 	bool init();

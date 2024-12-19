@@ -36,10 +36,8 @@ int main(int argc, char** argsv)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Window/SDL Initialisation failed", SDL_GetError(), NULL);
 	}
 
-	//Delta time setup
-	Uint64 now = SDL_GetPerformanceCounter();
-	Uint64 last = 0;
-	double deltaTime = 0.0;
+	Uint32 startTime = SDL_GetTicks();
+	int frameCount = 0;
 
 	ParticleSystem particleSystem;
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
@@ -48,12 +46,6 @@ int main(int argc, char** argsv)
 	SDL_Event ev;
 	while (running)
 	{
-		mvp = projection * view;
-		//deltaTime calc
-		last = now;
-		now = SDL_GetPerformanceCounter();
-		deltaTime = (double)((now - last) * 1000 / (double)SDL_GetPerformanceFrequency());
-
 		window.clearScreen();
 		particleSystem.update();
 
@@ -139,14 +131,21 @@ int main(int argc, char** argsv)
 				}
 			}
 			// Update the camera view matrix
-			view = glm::lookAt(
-				position,
-				position + forward,
-				up
-			);
+			view = glm::lookAt(position, position + forward, up);
 
 			// Update MVP
 			mvp = projection * view;
+		}
+		frameCount++;
+		Uint32 currentTime = SDL_GetTicks();
+		if (currentTime - startTime >= 1000) 
+		{
+			float fps = frameCount / ((currentTime - startTime) / 1000.0f);
+			std::cout << fps << "," << std::endl;
+
+			// Reset for the next second
+			startTime = currentTime;
+			frameCount = 0;
 		}
 	}
 	window.close();
