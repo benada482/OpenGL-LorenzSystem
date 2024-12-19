@@ -3,9 +3,10 @@
 #include <iostream>
 #include <random>
 
-//Get random seed from hardware/os. Then use Mersenne Twister to generate further random
+//Get random seed from hardware/os. Then use Mersenne Twister to generate further random without sacrificing hardware performance
 static std::random_device rd;
 static std::mt19937 gen(rd());
+
 //Clamp the random values from 0.01 to 0.10
 static std::uniform_real_distribution<double> dist(0.01, 0.10);
 
@@ -26,6 +27,7 @@ Particle::Particle()
 /// The z equation is dz/dt = xy - cz
 /// 
 /// a, b and c are constant variables for the values of sigma, rho and beta. These constants are 10, 28 and 8/3 respectivley.
+/// The results of these equations are based off the current position of the particle and the result is added to the position so it moves to the correct postion.
 /// </summary>
 void Particle::update()
 {
@@ -36,6 +38,7 @@ void Particle::update()
 	xPos += dx;
 	yPos += dy;
 	zPos += dz;
+	
 }
 
 Particle::~Particle()

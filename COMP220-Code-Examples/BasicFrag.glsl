@@ -1,8 +1,9 @@
 #version 330 core
 
-out vec4 color; //vec4 because we include alpha!
+out vec4 FragColor;
 
-void main()
+//Set colour to be white
+void main() 
 {
-	color = vec4(1.0, 0.5, 0.0, 1.0); //orange
+    FragColor = vec4(1.0, 1.0, 1.0, 1.0); 
 }

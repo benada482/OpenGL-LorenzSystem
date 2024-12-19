@@ -10,16 +10,21 @@
 
 
 
-
+/// <summary>
+/// Create a nullptr to window so the value can be filled later.
+/// </summary>
 Window::Window()
 {
 	SDL_Window* window(nullptr);
-	Uint32* buffer(nullptr);
 }
 
+/// <summary>
+/// Sets up SDL, GLEW and connects OpenGL to open a window and render to that window
+/// Set up ImGUI to create a simple GUI on the window
+/// </summary>
+/// <returns>Returns true when creation of the window is successful</returns>
 bool Window::init()
 {
-	//buffer = new Uint32[screenWidth * screenHeight];
 	//Initialises the SDL Library, passing in SDL_INIT_VIDEO to only initialise the video subsystems
 	//https://wiki.libsdl.org/SDL_Init
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -72,17 +77,26 @@ bool Window::init()
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
+	//Connect to the opengl window render
 	ImGui_ImplSDL2_InitForOpenGL(window, glContext);
 	ImGui_ImplOpenGL3_Init();
 
 	return true;
 }
 
+/// <summary>
+/// Sets the particleSystem as ps using a pointer so ImGUI can access it
+/// </summary>
+/// <param name="ps">Outputs the particle system</param>
 void Window::setParticleSystem(ParticleSystem* ps)
 {
 	particleSystem = ps;
 }
 
+/// <summary>
+/// Sets up ImGUI value from the tutorial on the GitHub: https://github.com/ocornut/imgui.git
+/// Allows for a slider to change the amount of particles rendered
+/// </summary>
 void Window::update()
 {
 	//Start ImGui frame
@@ -90,18 +104,19 @@ void Window::update()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::Begin("Settings");
+	ImGui::Begin("Lorenz Settings");
 
+	//Slider for particle number
 	ImGui::Text("Particle Number");
 	ImGui::SliderInt("Int slider", &particleSystem->numOfParticles, 0, 100000);
-	//particleSystem->update();
 	ImGui::Text("Value: %d", particleSystem->numOfParticles);
 
-	ImGui::Text("a value");
-	ImGui::SliderFloat("Float Slider", &particle.a, 0.0f, 20.0f);
+	//ImGui::Text("a value");
+	//ImGui::SliderFloat("Float Slider", &particle.a, 0.0f, 20.0f);
 
 	ImGui::End();
 	
+	//Draw it to screen
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -109,11 +124,17 @@ void Window::update()
 	SDL_GL_SwapWindow(window);
 }
 
+/// <summary>
+/// Clears the screen of past drawn content leaving it blank
+/// </summary>
 void Window::clearScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+/// <summary>
+/// Closes all variables and context to free memory
+/// </summary>
 void Window::close()
 {
 	ImGui_ImplOpenGL3_Shutdown();

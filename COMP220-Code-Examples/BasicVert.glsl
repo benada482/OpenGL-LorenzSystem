@@ -1,11 +1,12 @@
 #version 330 core
 
-layout(location = 0) in vec3 position;
+//Pass in particle positions and the mvp
+layout(location = 0) in vec3 position; 
+uniform mat4 MVP; 
 
-uniform mat4 mvp;
-
-void main()
+//set particle size and calulate position relative to mvp
+void main() 
 {
-	gl_Position = mvp * vec4(position, 1.0);
-	gl_PointSize = 5.0;
+    gl_Position = MVP * vec4(position, 1.0);
+    gl_PointSize = 1.0; 
 }
