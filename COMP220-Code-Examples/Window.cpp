@@ -42,7 +42,7 @@ bool Window::init()
 		return false;
 	}
 
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_GLContext glContext = SDL_GL_CreateContext(window);
 
 	//Set SDL_GL version
