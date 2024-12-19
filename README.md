@@ -35,11 +35,17 @@ In worksheet 2 I have successfully create a way to render and display 2D particl
 To create the first instance of a particle system in worksheet2 a tutorial playlist was used so that I could learn and understand more of OpenGl and SDL[8]. This tutorial showed how to make a pixel based particle system that moved around the screen while staying within the window, allowing particles to bounce off the edges of the screen.
 
 [1] W. Harris, ‘How Chaos Theory Works’, HowStuffWorks. Accessed: Dec. 17, 2024. [Online]. Available: https://science.howstuffworks.com/math-concepts/chaos-theory.htm
+
 [2] E. N. Lorenz, ‘Deterministic Nonperiodic Flow’, AMS, vol. 20, no. 2, pp. 130–141, Mar. 1963.
+
 [3] Q. Yao and G. Liu, ‘Simulation and analysis of Lorenz system’s dynamics characteristics’, in 2009 International Conference on Image Analysis and Signal Processing, Apr. 2009, pp. 427–429. doi: 10.1109/IASP.2009.5054666.
+
 [4] A. S. Elwakil, S. Ozoguz, and M. P. Kennedy, ‘Creation of a complex butterfly attractor using a novel Lorenz-Type system’, IEEE Transactions on Circuits and Systems I: Fundamental Theory and Applications, vol. 49, no. 4, pp. 527–530, Apr. 2002, doi: 10.1109/81.995671.
+
 [5] L. Latta, ‘Building a Million-Particle System’, Game Developer. Accessed: Dec. 17, 2024. [Online]. Available: https://www.gamedeveloper.com/programming/building-a-million-particle-system
+
 [6] J. Kruger, P. Kipfer, P. Konclratieva, and R. Westermann, ‘A particle system for interactive visualization of 3D flows’, IEEE Transactions on Visualization and Computer Graphics, vol. 11, no. 6, pp. 744–756, Nov. 2005, doi: 10.1109/TVCG.2005.87.
+
 [7]	Cave of Programming, ‘Cave of Programming, C++ Tutorial for Beginners’, YouTube. Accessed: Dec. 19, 2024. [Online]. Available: https://www.youtube.com/channel/UCnAdXkr17iQS8YcYl0LhPdw
 
 
