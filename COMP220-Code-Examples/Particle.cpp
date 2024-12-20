@@ -4,9 +4,9 @@
 
 Particle::Particle()
 {
-	xPos = ((double)rand() / RAND_MAX) * 0.09 + 0.01;
-	yPos = ((double)rand() / RAND_MAX) * 0.09 + 0.01;
-	zPos = ((double)rand() / RAND_MAX) * 0.09 + 0.01;
+	xPos = ((double)rand() / RAND_MAX) * 0.09;
+	yPos = ((double)rand() / RAND_MAX) * 0.09;
+	zPos = ((double)rand() / RAND_MAX) * 0.09;
 
 	x = 0.01;
 	y = 0;
