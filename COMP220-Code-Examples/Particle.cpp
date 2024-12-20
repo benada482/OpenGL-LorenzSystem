@@ -2,22 +2,25 @@
 #include <stdlib.h>
 #include <iostream>
 
+/// <summary>
+/// Create random starting positions of particles
+/// </summary>
 Particle::Particle()
 {
 	xPos = ((double)rand() / RAND_MAX) * 0.09;
 	yPos = ((double)rand() / RAND_MAX) * 0.09;
 	zPos = ((double)rand() / RAND_MAX) * 0.09;
-
-	x = 0.01;
-	y = 0;
-	z = 0;
-	a = 10;
-	b = 28;
-	c = 8.0 / 3.0;
-	t = 0.01;
-	int i;
 }
 
+/// <summary>
+/// Updates the particles according to the simplified version of the Lorenz Equations. These equations calculate the position in the x, y and z axis. 
+/// The x equation is dx/dt = a (y - x)
+/// The y equation is dy/dt = b (p - z) - y
+/// The z equation is dz/dt = xy - cz
+/// 
+/// a, b and c are constant variables for the values of sigma, rho and beta. These constants are 10, 28 and 8/3 respectivley.
+/// The results of these equations are based off the current position of the particle and the result is added to the position so it moves to the correct postion.
+/// </summary>
 void Particle::update()
 {
 	double dx = (a * (yPos - xPos)) * t;

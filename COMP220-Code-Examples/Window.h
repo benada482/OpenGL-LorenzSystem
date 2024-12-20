@@ -4,6 +4,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+/// <summary>
+/// Create variable for the window size and assign values
+/// Set functions for window setup, initialisation, connecting the particle system to the window, updating the window, clearing it and closing.
+/// Set up pointers to all other variables needed
+/// </summary>
 class Window
 {
 public:
@@ -13,13 +18,9 @@ public:
 	Window();
 	bool init();
 	void update();
-	void setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue);
 	void clearScreen();
 	void close();
 
 	SDL_Window* window;
-	SDL_Renderer* renderer;
-	SDL_Texture* texture;
-	Uint32* buffer;
 };
 

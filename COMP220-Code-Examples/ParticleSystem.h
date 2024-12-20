@@ -2,6 +2,11 @@
 
 #include "Particle.h"
 
+/// <summary>
+/// Set the number of particles that the program starts with. 
+/// Using a pointer to the particle class store each particles data inside a vector defined below.
+/// Functions for ParticleSystem creation, updating the particles and resizing the vector if the particle number changes
+/// </summary>
 class ParticleSystem
 {
 public:

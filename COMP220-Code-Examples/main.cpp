@@ -20,6 +20,14 @@
 #include "Window.h";
 #include "ParticleSystem.h"
 
+/// <summary>
+/// The main loop responsible for interacting with the renderer, creates the camera postions within the window, 
+/// creates pointers to each class so they can all be rendered properly, renders through a for loop running through each particle 
+/// Handles simple camera movement so that the user can move around a bit within the scene with the wasd keys.
+/// </summary>
+/// <param name="argc">Used to process command line arguments</param>
+/// <param name="argsv">Used to process command line arguments</param>
+/// <returns></returns>
 int main(int argc, char** argsv)
 {
 	srand(time(NULL));
@@ -36,6 +44,7 @@ int main(int argc, char** argsv)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Window/SDL Initialisation failed", SDL_GetError(), NULL);
 	}
 
+	//Variables for FPS counter
 	Uint32 startTime = SDL_GetTicks();
 	int frameCount = 0;
 
@@ -48,11 +57,6 @@ int main(int argc, char** argsv)
 	{
 		window.clearScreen();
 		particleSystem.update();
-
-		//stored as unsigned char so if value goes about 256 it will overflow to be stored within the 255 range
-		unsigned char green = 225;
-		unsigned char red = 225;
-		unsigned char blue = 225;
 
 		const Particle* const pParticles = particleSystem.getParticles();
 
@@ -136,6 +140,7 @@ int main(int argc, char** argsv)
 			// Update MVP
 			mvp = projection * view;
 		}
+		//Logic for counting the FPS and outputs to commandline window.
 		frameCount++;
 		Uint32 currentTime = SDL_GetTicks();
 		if (currentTime - startTime >= 1000) 

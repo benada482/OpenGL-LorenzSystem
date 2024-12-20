@@ -2,12 +2,18 @@
 #include <gl\glew.h>
 #include "string.h"
 
+/// <summary>
+/// Create a nullptr to window so the value can be filled later.
+/// </summary>
 Window::Window()
 {
-	SDL_Window* window(nullptr);
-	Uint32* buffer(nullptr);
+	SDL_Window* window(nullptr);;
 }
 
+/// <summary>
+/// Sets up SDL, GLEW and connects OpenGL to open a window and render to that window
+/// </summary>
+/// <returns>Returns true when creation of the window is successful</returns>
 bool Window::init()
 {
 	//buffer = new Uint32[screenWidth * screenHeight];
@@ -61,18 +67,25 @@ bool Window::init()
 	return true;
 }
 
+/// <summary>
+/// Updates screen with particles in new locations
+/// </summary>
 void Window::update()
 {
-	//Updates screen with pixel values
 	SDL_GL_SwapWindow(window);
-
 }
 
+/// <summary>
+/// Clears the screen of past drawn content leaving it blank
+/// </summary>
 void Window::clearScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+/// <summary>
+/// Destroys all variables and context to free memory
+/// </summary>
 void Window::close()
 {
 	SDL_DestroyWindow(window);
