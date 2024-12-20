@@ -41,42 +41,29 @@ int main(int argc, char** argsv)
 	const float walkspeed = 0.2f, rotSpeed = 0.1f;
 	projection = glm::perspective(glm::radians(45.f), 4.0f / 3.0f, 0.1f, 100.0f);
 
-	//Creates a pointer to the window, checks if it has been created
+	//Creates a pointer to the window then error checks it
 	Window window;
 	if (window.init() == false)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Window/SDL Initialisation failed", SDL_GetError(), NULL);
 	}
 
-	//Sets a target FPS and amount of time per frame to ensure it does not run too quick
-	const int targetFPS = 60; 
-	const int frameDelay = 1000 / targetFPS; 
-	Uint32 frameStart;
-	int frameTime;
-
 	//Sets up call to particleSystem and connects it to the window through a pointer
 	ParticleSystem particleSystem;
 	window.setParticleSystem(&particleSystem);
 
-	// OpenGL VBO setup
+	//OpenGL VBO setup
 	GLuint particleVBO;
 	glGenBuffers(1, &particleVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, particleVBO);
 
-	// Allocate memory for the VBO with the number being amount of particles
-	const size_t maxParticles = 10000000; // Adjust this to your needs
+	//Allocates VBO memory and unbinds buffer
 	glBufferData(GL_ARRAY_BUFFER, maxParticles * sizeof(glm::vec3), nullptr, GL_DYNAMIC_DRAW);
-
-	// Unbind buffer
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// Shader setup
+	//Shader setup
 	Shader shader("BasicVert.glsl", "BasicFrag.glsl");
 	shader.set();
-
-	// Update particle buffer
-	const Particle* const pParticles = particleSystem.getParticles();
-	int particlesToRender = particleSystem.particles.size();
 
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
@@ -84,60 +71,51 @@ int main(int argc, char** argsv)
 	SDL_Event ev;
 	while (running)
 	{
-		frameStart = SDL_GetTicks(); // Get the time at the start of the frame
+		//Set time when frame starts
+		frameStartTime = SDL_GetTicks(); 
 
-		mvp = projection * view;
-		//deltaTime calc
-		//last = now;
-		//now = SDL_GetPerformanceCounter();
-		//deltaTime = (double)((now - last) * 1000 / (double)SDL_GetPerformanceFrequency());
-
+		//Get rid of previous drawing on screen and update the particle positions
 		window.clearScreen();
 		particleSystem.update();
 
+		//Set pointer of the particleSystem and the amount of particles in the vector
 		const Particle* const pParticles = particleSystem.getParticles();
-		int particlesToRender = particleSystem.particles.size(); //get vector size
-
-		// Set particle size to 5 pixels
-		glPointSize(1.0f); 
+		int particlesToRender = particleSystem.particles.size(); 
 
 		// Bind the VBO
 		glBindBuffer(GL_ARRAY_BUFFER, particleVBO);
 
-		// Map buffer to CPU memory and copy particle positions
+		//Gives access to GPU memory so it isn't copied, avoids CPU calls each frame for updating particle positions
 		glm::vec3* buffer = (glm::vec3*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-		if (buffer) {
+
+		//if created, fill buffer with particle positions, writing directly to GPU
+		if (buffer) 
+		{
 			for (int i = 0; i < particlesToRender; i++) {
 				buffer[i] = glm::vec3(pParticles[i].xPos, pParticles[i].yPos, pParticles[i].zPos);
 			}
+			//Allow openGL to use the buffer after writing has finished
 			glUnmapBuffer(GL_ARRAY_BUFFER);
 		}
-
-		// Unbind buffer
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 
 		// Enable the shader program
 		shader.set();
 
-		// Pass the MVP matrix to the shader
+		//Send MVP to the shader via location
 		GLuint mvpLoc = glGetUniformLocation(shader.shaderID, "MVP");
 		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
-		// Bind the VBO
-		glBindBuffer(GL_ARRAY_BUFFER, particleVBO);
-
-		// Enable vertex attribute (position)
+		//Sets up data to pass to vertex array
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 
 		// Draw particles as points
 		glDrawArrays(GL_POINTS, 0, particlesToRender);
 
-		// Disable vertex attribute
+		//Clears vertex data
 		glDisableVertexAttribArray(0);
 
-		// Unbind buffer
+		//Unbind buffer
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		//Draws to screen
@@ -191,9 +169,10 @@ int main(int argc, char** argsv)
 
 		}
 		//Delay the program to ensure that it does not exceed the framerate and run too fast
-		frameTime = SDL_GetTicks() - frameStart;
-		if (frameTime < frameDelay) {
-			SDL_Delay(frameDelay - frameTime);
+		frameTime = SDL_GetTicks() - frameStartTime;
+		if (frameTime < delay)
+		{
+			SDL_Delay(delay - frameTime);
 		}
 	}
 	window.close();

@@ -1,4 +1,5 @@
 #include "ParticleSystem.h"
+#include <execution>
 
 /// <summary>
 /// Initialises the vector to be the same size as the amount of particles within the system.
@@ -18,10 +19,8 @@ void ParticleSystem::update()
 		resizeParticles();
 	}
 
-	for (auto& particle : particles)
-	{
-		particle.update();
-	}
+	//multithreading, uses the <execution> include, needs C++17 and above
+	std::for_each(std::execution::par, particles.begin(), particles.end(),[](Particle& particle) { particle.update(); });
 }
 
 /// <summary>
