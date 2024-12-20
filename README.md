@@ -1,5 +1,40 @@
-# COMMON ISSUE:
-if many error appear on start up, check:
-	property pages - configuration proprties - General - General properties - Platform Toolset
-	make sure a version is set.
-	If no version installed, you will need to install one, close visual studio first.
+# Requirements:
+Needs to run within C++17 and above due to execution library being used for multi threading.
+Contains Dear ImGUI
+Uses OpenGL, SDL and GLEW
+
+# Lorenz Attractor
+From worksheet 3 the implementation of the Lorenz Attractor has improved. This is through the use of optimisation techniques and the use of user interaction. The program has been optimised through the use of multithreading techniques and by using buffer objects like VBOs to ensure a speedy rendering process. The user interaction allows for the amount of particles on screen to be changed. This interaction has been achieved through the use of Dear ImGUI,, an open source software that has premade UI windows. This intergration has linked the amount of particles that are dynamically rendered on screen with a slider that the user can change. Within the running of this program it is locked to be a maximum of 60FPS. This is due to when only a few particles are being rendered the program would run too quickly and the effect was not easily seen. During performance testing this framerate limit was turned off to gain an accurate FPS count. To enable automatic multithreading within this project the code has been upgraded to use C++17. Anything below this standard may not  run or have unforseen bugs as it uses elements of the standard library like the execution library, which can only be found in C++17 and above.
+
+# Optimisations
+
+# Profiling
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/R%20Graphs%20%26%20Data/ParticlesFPSgraph.png" width="900" height="500" />
+This graph shows a good improvement from worksheet 3 as the FPS stays stable at 160 FPS until 20,000 particles are rendered where it drops in a expected curve. It is limited to 160FPS due to vsync being enabled on the project. This only affects the lower end of particles as their frame rate increases drastically wihtout vsync but there is no difference outside of the average between having vsync on or off when particles are rendered in the hundreds and thousands. Compared to the graph from worksheet 3 this is a major improvement as the curve is a lot smoother of a drop as the amount of particles increases. At 1 million particles we can see that the framerate is still at 40FPS which is a massive improvement compared to the FPS of the last worksheet. 
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/R%20Graphs%20%26%20Data/MillionsParticlesFPSgraph.png" width="900" height="500" />
+Since this code ran so well it was decided that it should be tested further to see how many particles could be handled. at 1 million there is an average of 40FPS which is good for a million moving particles within a window. At 2 million the framerate halves to be an average of around 20FPS. This shows that more optimisation could be done to further improve the code but it is not necessary for good running of the project. At 3 million particles the gramerate again near halves from 2 million to be around an average of 10FPS. Overall this is a good improvment from the previous worksheet as more than enough particles are able to be rendered. 
+
+## 400,000 Particles
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/400kCPU.png" width="900" height="500" />
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/400kCPU2.png" width="900" height="500" />
+The Visual Studio CPU profiler shows that the external call to the graphics card is no longer one of the top calls since it has been changed into a particle buffer. This call time has been reduced by utilising the map buffer function that allows for the C++ program to write straight to the GPU memory to modify particle data. This stops a CPU buffering being created and sent to the graphics card for each frame. The highest call now within this program is the Particle::update call and the SDL_main. This makes sense since each particle has 3 equations to complete for its positioning and with this amount of particles it will take lots of computational power. The main loop will take up CPU resources since it is responsible for the programs running and the output to the window. The GPU calls are still quite high up but the impact they have on the system has been reduced through the use of optimisation, these could be reduced further using more techniques but these are out of scope for this project. 
+
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/Threads400k.png" width="900" height="500" />
+The CPU threads show that a more even spread of function calls are happening. These are not completely even as OpenGL draw calls have to be executed within the same thread to work properly. It is possible to seperate these but it is complex and can lead to unforseen bugs within the code. Within the main function there is a for loop that is not multithreaded. Ideally this would be made multithreaded to make the calls even more efficient but due to the parameters being passed in it cannot easily be made multithreaded through the execution library. While not a perfect example of multithreading what has been done has had a clear improvement by making more threads active. 
+
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/Memory400K.png" width="900" height="500" />
+The memory within this project looks stable. There are no obvious signs of memory leaks as the memory does not increase conastnatly and has periods of increase and decrease. This has stayed the same since the previous worksheets so was no a point to optimise but it is still good to profile and check that nothing has effected the memory efficiency of this program. 
+
+## 1,000,000 Particles
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/1millCPU.png" width="900" height="500" />
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/1millCPU2.png" width="900" height="500" />
+From the CPU calls we can see that the same as 400k particles is very similar to 1 million. This is good since it shows a clear improvement within the code but also outlines future possible changes. The top functions are still the Particle::update and the SLD_main. These can be looked into for future improvment within this project. The rest of the calls are external calls which can be any form of external code. Within this project it is safe to assume that these will be calls to the graphics card so that the particles can be rendered quickly and efficiently. From the CPU usage graph we can still see that an external call is still the highest call within this project. While it now runs better and more efficently, there are more optimisations that can be made that can now be found. While fixing some of the graphical calls to be more efficient there can be further work to make this take less of an impact over the running of this software.
+
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/1millCPUthread.png" width="900" height="500" />
+The threads for a million particles shows the multithreading a bit better than the other screenshot. While some graphs do have a lot more usage than others due to things like OpenGL not being able to be multithreaded easier and for loops overall from worksheet3 there is a general improvement in the utilisation of threads. This makes the program run better as more data can be dealt with without haaving to wait for threads to free up. Using the automatic multithreading library in C++17 makes this easier to implement as well due to it automatically deteecting the hardware threads and capabilities. 
+
+<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet4/Profiling/1millMemory.png" width="900" height="500" />
+The memory management is the same points as above. The memory is shown to be allocated and then has periods of freeing memory. This overall shows that there is not any noticable memory issues and the program runs fine over longer periods of time.
+
+# References
+[1] omar, ocornut/imgui. (Dec. 20, 2024). C++. Accessed: Dec. 20, 2024. [Online]. Available: https://github.com/ocornut/imgui
