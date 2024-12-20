@@ -110,8 +110,28 @@ void Window::update()
 	ImGui::Text("Particle Number");
 	ImGui::SliderInt("Int slider", &particleSystem->numOfParticles, particleMin, particleMax);
 
-	//ImGui::Text("a value");
-	//ImGui::SliderFloat("Float Slider", &particle.a, 0.0f, 20.0f);
+
+	//Has to use if loop to check to see if the slider changes to then update it within the particle system otherwise it only updates value in particle
+	//Uses the slider to set to set a pointer within the particle system to change the A value
+	ImGui::Text("a value");
+	if (ImGui::SliderFloat("Float A Slider", &particle.a, 0.0f, 20.0f))
+	{
+		particleSystem->AvalueSlider(particle.a);
+	}
+
+	//Uses the slider to set to set a pointer within the particle system to change the b value
+	ImGui::Text("b value");
+	if (ImGui::SliderFloat("Float B Slider", &particle.b, 0.0f, 20.0f))
+	{
+		particleSystem->AvalueSlider(particle.b);
+	}
+
+	//Uses the slider to set to set a pointer within the particle system to change the c value
+	ImGui::Text("c value");
+	if (ImGui::SliderFloat("Float C Slider", &particle.c, 0.0f, 20.0f))
+	{
+		particleSystem->AvalueSlider(particle.c);
+	}
 
 	ImGui::End();
 	

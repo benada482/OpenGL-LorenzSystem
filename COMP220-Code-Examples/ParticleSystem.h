@@ -18,6 +18,9 @@ public:
 	
 	ParticleSystem();
 	void update();
+	void AvalueSlider(float a);
+	void BvalueSlider(float b);
+	void CvalueSlider(float c);
 	void resizeParticles();
 
 	~ParticleSystem();
