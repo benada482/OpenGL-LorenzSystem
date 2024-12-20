@@ -63,7 +63,7 @@ int main(int argc, char** argsv)
 
 	//Shader setup
 	Shader shader("BasicVert.glsl", "BasicFrag.glsl");
-	shader.set();
+	shader.set();;
 
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;

@@ -11,7 +11,7 @@
 class ParticleSystem
 {
 public:
-	int numOfParticles = 3000000;
+	int numOfParticles = 1000000;
 
 	const Particle* const getParticles() { return particles.data(); };
 	std::vector<Particle> particles;
