@@ -108,8 +108,7 @@ void Window::update()
 
 	//Slider for particle number
 	ImGui::Text("Particle Number");
-	ImGui::SliderInt("Int slider", &particleSystem->numOfParticles, 0, 100000);
-	ImGui::Text("Value: %d", particleSystem->numOfParticles);
+	ImGui::SliderInt("Int slider", &particleSystem->numOfParticles, particleMin, particleMax);
 
 	//ImGui::Text("a value");
 	//ImGui::SliderFloat("Float Slider", &particle.a, 0.0f, 20.0f);

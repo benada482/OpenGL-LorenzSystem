@@ -16,6 +16,8 @@ public:
 	const static int screenWidth = 800;
 	const static int screenHeight = 600;
 	int sliderInt;
+	int particleMin = 0;
+	int particleMax = 3000000;
 
 	Window();
 	bool init();
