@@ -18,7 +18,7 @@ To create the first instance of a particle system in worksheet2 a tutorial playl
 
 ## Profiling:
 Profiling has been carried on on this project so that further creation can be guided by facts and what is needed to be improved to get better results. 
-https://github.com/benada482/OpenGL-LorenzSystem/tree/worksheet2/Profiling
+
 <img src=https://github.com/benada482/OpenGL-LorenzSystem/tree/worksheet2/Profiling/RCode/ParticlesFpsGraph.png width="700" height="500" />
 This graph shows the correlation between the amount of particles that are rendered in this system and the Frames Per Second (FPS). This is an important component to consider for a simulation like this since particles can be within games, film and scientific research. Using a large amount of particles creates a more impressive and detailed effect, leading to it being more believable while interacting with media including it. For scientific research it is important to have the correct amount of particles while not sacrificing time to accurately simulate them. The graph follows expected trends of the more particles there are the lower the amount of FPS. Sixty FPS is a common standard to adhere to within games and graphics, the graph tells us that around 400,000 particles is where the program starts dropping below 60fps. This is expected within this program as that many particles fills most the screen so the drop in performance is expected.
 
