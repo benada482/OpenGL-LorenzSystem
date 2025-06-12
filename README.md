@@ -19,13 +19,13 @@ To create the first instance of a particle system in worksheet2 a tutorial playl
 ## Profiling:
 Profiling has been carried on on this project so that further creation can be guided by facts and what is needed to be improved to get better results. 
 
-<img src=https://github.com/benada482/OpenGL-LorenzSystem/tree/worksheet2/Profiling/RCode/ParticlesFpsGraph.png width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet2/Profiling/RCode/ParticlesFpsGraph.png" width="700" height="500" />
 This graph shows the correlation between the amount of particles that are rendered in this system and the Frames Per Second (FPS). This is an important component to consider for a simulation like this since particles can be within games, film and scientific research. Using a large amount of particles creates a more impressive and detailed effect, leading to it being more believable while interacting with media including it. For scientific research it is important to have the correct amount of particles while not sacrificing time to accurately simulate them. The graph follows expected trends of the more particles there are the lower the amount of FPS. Sixty FPS is a common standard to adhere to within games and graphics, the graph tells us that around 400,000 particles is where the program starts dropping below 60fps. This is expected within this program as that many particles fills most the screen so the drop in performance is expected.
 
-<img src="https://github.com/benada482/OpenGL-LorenzSystem/tree/worksheet2/Profiling/CPU400000particles.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet2/Profiling/CPU400000particles.png" width="700" height="500" />
 This graph from the profilier built into Visual Studio shows the CPU usage. From this we can see that the functions that take the most computational power and time. The SDL_main function is the main loop within the program that handles the rendering and the primary draw functions. It also calls other classes. Particle::update() is responsible for moving the particles around the screen, this takes a lot of CPU usage due to having to update each particles position and calculating if they have reached the screen border so the speed can be reversed so they bounce inside the window. The Window::setPixel is also a large usage due to it having to run through each particle to draw them to the correct place within the window. 
 
-<img src="https://github.com/benada482/OpenGL-LorenzSystem/tree/worksheet2/Profiling/Memory400000.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet2/Profiling/Memory400000.png" width="700" height="500" />
 This is the memory usage of the program collected from the built in profiler within Visual Studio. From the snapshots that we can see the memory usage is stable and shows no evidence of memory leaks. As the memory stays the same this should not be consider a priority to fix or improve as it does not impact the performance of the program as it is. 
 
 ## Plan:
