@@ -3,21 +3,21 @@ The Lorenz Attractor is now rendered within hte window by using a particles. The
 
 # Profiling:
 
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/RCode/ws3particles.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/RCode/ws3particles.png" width="700" height="500" />
 Since making the program operate within a three dimensional space and introducing the differential equations for the particle movement the frame rate has dropped drastically. This can be contributed to many factors that we can see through the use of profiling. The graph shows the amount of particles against the FPS, this is important to keep up as simulations can rely on having enough particles rendered to create data and create the desired pattern.
 
 ## 400,000 particles:
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/Images/CPU400k.png" width="700" height="500" />
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/Images/CPU400k2.png" width="700" height="500" />
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/Images/CPUthread400k.png" width="700" height="500" />
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/Images/Memory400k.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/Images/CPU400k.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/Images/CPU400k2.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/Images/CPUthread400k.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/Images/Memory400k.png" width="700" height="500" />
 These screenshots from the Visual Studio profiler show data from the CPU and memory. From the first two screenshots we can see that most of the CPUs computation time and power is due to a function called External Call. For a simulation like this that type of call will usually be to the graphics card. This taking the longest time on the CPU shows that the render data is being handled inefficiently between the CPU and GPU to create a larger percentage than wanted. The third screenshot show the use graph of the CPU threads. From this we can see that some are being utilised more than others, this will slow the program down since there will be times where data needs to wait for other calls to go through the threads first. Ideally all these graphs should be at similar levels to ensure that all resources are being utilised and the program can run as quickly as possible. In the final screenshot for this section we can see the memory usage of the program overall. These memory snapshots show the memory remaining pretty stable with no large or constant increase in memory usage. This means that there should not be a memory leak within the program that will cause crashes if left running.
 
 ## One million particles:
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/Images/CPU1million.png" width="700" height="500" />
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/Images/CPU1million2.png" width="700" height="500" />
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/Images/CPUthread1million.png" width="700" height="500" />
-<img src="https://github.falmouth.ac.uk/GA-Undergrad-Student-Work-24-25/comp305-2203238/blob/worksheet3/Profiling/Images/Memory1million.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/Images/CPU1million.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/Images/CPU1million2.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/Images/CPUthread1million.png" width="700" height="500" />
+<img src="https://github.com/benada482/OpenGL-LorenzSystem/blob/worksheet3/Profiling/Images/Memory1million.png" width="700" height="500" />
 While rendering a million particles we get the same as above but at a more noticable level. The CPU shows that it is the external calls still affecting the CPU performance. As it is similar to above there is not more to comment within the first two screenshots. The amount used for the external call is higher at 99% now which signifies it is the graphics card as the amount of things to render has increased. The CPU thread graphs is a lot easier to see the difference when a million particles are being render. In screenshot 3 you can see some of the graphs are at their maximum while others are still quite low. This means that the program is only using some threads to perform operations and make calls. This requires data to wait for the operation ahead of it to be completed, overall slowing down the program when there are other threads avaliable to perform these operations. The memory is similar to above but the amounts are just larger, as expected when rendering more particles. There is no sign of memory leak since memory that is used is deallocated as seen within the screenshot. 
 
 # Future Steps:
